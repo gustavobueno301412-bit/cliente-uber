@@ -28,16 +28,9 @@
             border: 1px solid #eaeaea;
         }
 
-        h2 {
-            margin-bottom: 30px;
-            font-weight: 600;
-            text-align: center;
-            color: #333;
-        }
+        h2 { margin-bottom: 30px; font-weight: 600; text-align: center; color: #333; }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+        .input-group { margin-bottom: 20px; }
 
         input {
             width: 100%;
@@ -52,30 +45,22 @@
             transition: border 0.3s;
         }
 
-        input:focus { border: 1.5px solid #007bff; }
+        input:focus { border: 1.5px solid #25D366; }
 
         button {
             width: 100%;
             padding: 16px;
-            background: #007bff;
+            background: #25D366;
             border: none;
             border-radius: 12px;
             color: white;
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
             transition: background 0.3s;
         }
 
-        button:hover { background: #0056b3; }
-
-        .status-msg {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
+        button:hover { background: #128C7E; }
     </style>
 </head>
 <body>
@@ -83,66 +68,37 @@
     <div class="container">
         <h2>Solicitar Corrida 🚘</h2>
        
-        <div class="input-group">
-            <input type="text" id="nome" placeholder="👤 Seu Nome">
-        </div>
-        <div class="input-group">
-            <input type="text" id="whatsapp" placeholder="📱 WhatsApp (com DDD)">
-        </div>
-        <div class="input-group">
-            <input type="text" id="origem" placeholder="📍 Endereço de partida">
-        </div>
-        <div class="input-group">
-            <input type="text" id="destino" placeholder="🏁 Para onde vai?">
-        </div>
-        <div class="input-group">
-            <input type="text" id="referencia" placeholder="🏠 Ponto de referência">
-        </div>
+        <div class="input-group"><input type="text" id="nome" placeholder="👤 Nome do passageiro"></div>
+        <div class="input-group"><input type="text" id="origem" placeholder="📍 Endereço de partida"></div>
+        <div class="input-group"><input type="text" id="destino" placeholder="🏁 Para onde vai?"></div>
+        <div class="input-group"><input type="text" id="referencia" placeholder="🏠 Ponto de referência"></div>
 
-        <button onclick="enviarPedido()">Solicitar Motorista</button>
-        <div id="status" class="status-msg"></div>
+        <button onclick="enviarWhatsApp()">Solicitar Motorista 💬</button>
     </div>
 
     <script>
-        const URL_API = "SUA_URL_DO_GOOGLE_SCRIPT_AQUI";
+        // --- COLOQUE O NÚMERO DO MOTORISTA AQUI ---
+        const WHATSAPP_MOTORISTA = "5512992448264";
 
-        function enviarPedido() {
-            const btn = document.querySelector('button');
-            const statusDiv = document.getElementById('status');
-           
-            const dados = {
-                nome: document.getElementById('nome').value,
-                whatsapp: document.getElementById('whatsapp').value,
-                origem: document.getElementById('origem').value,
-                destino: document.getElementById('destino').value,
-                referencia: document.getElementById('referencia').value
-            };
+        function enviarWhatsApp() {
+            const nome = document.getElementById('nome').value;
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+            const ref = document.getElementById('referencia').value;
 
-            if(!dados.nome || !dados.whatsapp || !dados.origem || !dados.destino) {
-                alert("Por favor, preencha todos os campos.");
+            if(!nome || !origem || !destino) {
+                alert("Por favor, preencha os campos principais.");
                 return;
             }
 
-            btn.innerText = "Enviando...";
-            btn.disabled = true;
+            const mensagem = `*Solicitação de Nova Corrida* 🚘%0A%0A` +
+                             `👤 Nome: ${nome}%0A` +
+                             `📍 Partida: ${origem}%0A` +
+                             `🏁 Destino: ${destino}%0A` +
+                             `🏠 Ref: ${ref}`;
 
-            fetch(URL_API + "?acao=fazerPedido", {
-                method: "POST",
-                mode: 'no-cors',
-                body: JSON.stringify(dados)
-            })
-            .then(() => {
-                statusDiv.innerText = "✅ Pedido enviado com sucesso!";
-                btn.innerText = "Solicitar Motorista";
-                btn.disabled = false;
-                // Limpar inputs
-                document.querySelectorAll('input').forEach(input => input.value = '');
-            })
-            .catch(() => {
-                statusDiv.innerText = "❌ Erro ao enviar. Tente novamente.";
-                btn.innerText = "Solicitar Motorista";
-                btn.disabled = false;
-            });
+            const url = `https://wa.me/${WHATSAPP_MOTORISTA}?text=${mensagem}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
